@@ -1,3 +1,5 @@
+import {validateRemoteDisplay} from './remote-screen.mjs?screen=lumi-controls';
+
 export const UUIDS = Object.freeze({
   service: '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
   rx: '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
@@ -75,11 +77,13 @@ export class MessageReassembler {
 }
 
 export function validateControl(value) {
-  const allowed = ['sync', 'toggle_chat', 'listen_start', 'listen_stop', 'set_volume'];
+  const allowed = ['sync', 'toggle_chat', 'listen_start', 'listen_stop', 'set_volume', 'display_ack', 'display_fail'];
   if (!value || value.v !== 1 || !integer(value.id, 0, 0x7fffffff) || !allowed.includes(value.cmd)) throw new Error('Invalid control');
-  const keys = value.cmd === 'set_volume' ? ['v', 'id', 'cmd', 'value'] : ['v', 'id', 'cmd'];
+  const withValue=['set_volume','display_ack','display_fail'].includes(value.cmd);
+  const keys = withValue ? ['v', 'id', 'cmd', 'value'] : ['v', 'id', 'cmd'];
   if (Object.keys(value).some(key => !keys.includes(key))) throw new Error('Unexpected control field');
   if (value.cmd === 'set_volume' && !integer(value.value, 0, 100)) throw new Error('Invalid volume');
+  if (['display_ack','display_fail'].includes(value.cmd) && !integer(value.value,1,0x7fffffff)) throw new Error('Invalid display revision');
   return value;
 }
 
@@ -93,5 +97,6 @@ export function validateSnapshot(value) {
       value.messages.some(message => !message || !['system', 'user', 'assistant'].includes(message.role) || typeof message.text !== 'string')) {
     throw new Error('设备快照格式不匹配，请检查固件版本');
   }
+  if (value.display!==undefined) validateRemoteDisplay(value.display);
   return value;
 }

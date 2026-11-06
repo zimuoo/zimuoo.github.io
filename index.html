@@ -7,31 +7,43 @@
   <meta name="description" content="噜米的屏幕。">
   <title>噜米 Lumi</title>
   <link rel="icon" type="image/png" href="./assets/lumi-mascot.png">
-  <link rel="stylesheet" href="./styles.css?screen=lumi">
-  <script type="module" src="./app.js?screen=lumi"></script>
+  <link rel="stylesheet" href="./styles.css?screen=lumi-controls">
+  <script type="module" src="./app.js?screen=lumi-controls"></script>
 </head>
 <body>
   <main id="screen" class="screen" data-motion="still" data-mood="calm" aria-label="噜米屏幕">
     <span id="demo-indicator" class="demo-indicator" hidden>演示 · 未连接设备</span>
     <div class="pairing-entry">
+      <button id="settings-button" class="settings-button" type="button" aria-label="打开设置" aria-haspopup="dialog" aria-expanded="false" aria-controls="connection-panel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="var(--paper)"/><circle cx="15" cy="17" r="3" fill="var(--paper)"/></svg><span>设置</span></button>
       <button id="connect-button" class="connect-button" type="button">连接噜米</button>
       <p id="pairing-hint" class="pairing-hint" hidden>请允许蓝牙，并确认系统配对</p>
     </div>
     <div class="lumi-stage">
       <div class="lumi-aura" aria-hidden="true"></div>
-      <button id="lumi" class="lumi" type="button" aria-label="噜米。长按显示连接选项" aria-haspopup="dialog" aria-expanded="false" aria-controls="connection-panel">
+      <button id="lumi" class="lumi" type="button" aria-label="噜米，轻点开始或结束对话，按住说话" aria-pressed="false">
         <img src="./assets/lumi-mascot.png" alt="噜米，一只薄荷绿的小河豚" width="1280" height="1280" draggable="false" fetchpriority="high">
       </button>
       <span id="activity" class="activity" role="status" aria-live="polite"></span>
     </div>
+    <section id="remote-screen" class="remote-screen" aria-label="设备微信屏幕" hidden>
+      <img id="remote-image" class="remote-image" alt="微信登录二维码，请用微信扫一扫" hidden>
+      <canvas id="remote-canvas" class="remote-image" role="img" aria-label="微信安全验证二维码，请使用另一部手机扫描" hidden></canvas>
+      <p id="remote-progress" class="remote-progress" role="status" hidden>正在准备二维码…</p>
+      <p id="remote-text" class="remote-text" role="status" aria-live="polite"></p>
+    </section>
     <div class="subtitle-area">
       <p id="screen-notice" class="screen-notice" role="status" hidden></p>
       <p id="subtitle" class="subtitle" aria-live="polite" aria-atomic="true"></p>
       <p id="error-message" class="error-message" role="alert" hidden></p>
     </div>
-    <section id="connection-panel" class="connection-panel" role="dialog" aria-label="连接选项" hidden>
-      <div class="panel-heading"><p id="panel-status">未连接</p><button id="close-panel" class="close-panel" type="button" aria-label="关闭连接选项">×</button></div>
+    <div class="voice-controls">
+      <p id="input-status" class="input-status" role="status" aria-live="polite">轻点噜米对话，也可以按住说话</p>
+      <button id="microphone-button" class="microphone-button" type="button" aria-label="按住说话，松开结束" aria-pressed="false" disabled><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg><span id="microphone-label">按住说话</span></button>
+    </div>
+    <section id="connection-panel" class="connection-panel" role="dialog" aria-label="设置" hidden>
+      <div class="panel-heading"><p id="panel-status">未连接</p><button id="close-panel" class="close-panel" type="button" aria-label="关闭设置">×</button></div>
       <div class="panel-actions"><button id="panel-connect" type="button">连接噜米</button><button id="sync-button" type="button" disabled>同步</button><button id="disconnect-button" type="button" disabled>断开</button></div>
+      <label class="volume-control" for="volume-input"><span>音量</span><output id="volume-value" for="volume-input">—</output><input id="volume-input" type="range" min="0" max="100" step="1" value="70" disabled></label>
     </section>
     <noscript><p class="script-required">请开启 JavaScript 后连接噜米。</p></noscript>
   </main>

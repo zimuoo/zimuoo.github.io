@@ -1,4 +1,4 @@
-import {UUIDS, frameJson, MessageReassembler, validateControl} from './ble-protocol.mjs';
+import {UUIDS, frameJson, MessageReassembler, validateControl} from './ble-protocol.mjs?screen=lumi-controls';
 
 // Every GATT operation shares this one queue, including connect and disconnect.
 export class BleClient {
